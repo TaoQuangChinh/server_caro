@@ -9,38 +9,30 @@ var body = [];
 //req: đối tượng phản hồi tới server(data đối tượng gửi lên server)
 const handleRequestListener = (req, res) => {
     var url = req.url;
-    var method = req.method;
 
-    if(method === 'POST' && url != '/'){
-        req.on('data', (chunk) => {
-            body.push(chunk);
-        });
-        return req.on('end', () => {
-            const parsedBody = Buffer.concat(body).toString();
-            const { id, email, pass, name_game } = JSON.parse(parsedBody);
-    
-            if (url === '/login') {
-                const result =  dataRegister("",email,pass,"");
-                handleWriteFile('data_login.txt', JSON.stringify(result));
-            } else if (url === '/register') {
-                const randomPass = randomstring.generate(7);
-                db.execute(`INSERT INTO user VALUES (?,?,?,?)`,[id,email,randomPass,name_game]);
-                myEmail.sendMail(emailOption(`${email}`,`${name_game}`,`${randomPass}`),(err,info)=>{
-                    if(err){
-                        res.statusCode = 404;
-                        res.write("404 Not Found");
-                        return res.end();
-                    }
-                });
-            }
-            body = [];
-        });
-    }
-    res.write('<html>');
-    res.write('<head><title>Enter Message</title><head>');
-    res.write('<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit">Send</button></form></body>');
-    res.write('</html>');
-    return res.end();
+    req.on('data', (chunk) => {
+        body.push(chunk);
+    });
+    return req.on('end', () => {
+        const parsedBody = Buffer.concat(body).toString();
+        const { id, email, pass, name_game } = JSON.parse(parsedBody);
+
+        if (url === '/login') {
+            const result =  dataRegister("",email,pass,"");
+            handleWriteFile('data_login.txt', JSON.stringify(result));
+        } else if (url === '/register') {
+            const randomPass = randomstring.generate(7);
+            db.execute(`INSERT INTO user VALUES (?,?,?,?)`,[id,email,randomPass,name_game]);
+            myEmail.sendMail(emailOption(`${email}`,`${name_game}`,`${randomPass}`),(err,info)=>{
+                if(err){
+                    res.statusCode = 404;
+                    res.write("404 Not Found");
+                    return res.end();
+                }
+            });
+        }
+        body = [];
+    });
 };
 
     const dataRegister = (id,email,pass,nameGame) =>{
