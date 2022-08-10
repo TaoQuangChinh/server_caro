@@ -17,29 +17,29 @@ const handleRequestListener = (req, res) => {
         return res.end();
     }
 
-    // req.on('data', (chunk) => {
-    //     body.push(chunk);
-    // });
-    // return req.on('end', () => {
-    //     const parsedBody = Buffer.concat(body).toString();
-    //     const { id, email, pass, name_game } = JSON.parse(parsedBody);
+    req.on('data', (chunk) => {
+        body.push(chunk);
+    });
+    return req.on('end', () => {
+        const parsedBody = Buffer.concat(body).toString();
+        const { id, email, pass, name_game } = JSON.parse(parsedBody);
 
-    //     if (url === '/login') {
-    //         const result =  dataRegister("",email,pass,"");
-    //         handleWriteFile('data_login.txt', JSON.stringify(result));
-    //     } else if (url === '/register') {
-    //         const randomPass = randomstring.generate(7);
-    //         db.execute(`INSERT INTO user VALUES (?,?,?,?)`,[id,email,randomPass,name_game]);
-    //         myEmail.sendMail(emailOption(`${email}`,`${name_game}`,`${randomPass}`),(err,info)=>{
-    //             if(err){
-    //                 res.statusCode = 404;
-    //                 res.write("404 Not Found");
-    //                 return res.end();
-    //             }
-    //         });
-    //     }
-    //     body = [];
-    // });
+        if (url === '/login') {
+            const result =  dataRegister("",email,pass,"");
+            handleWriteFile('data_login.txt', JSON.stringify(result));
+        } else if (url === '/register') {
+            const randomPass = randomstring.generate(7);
+            db.execute(`INSERT INTO user VALUES (?,?,?,?)`,[id,email,randomPass,name_game]);
+            myEmail.sendMail(emailOption(`${email}`,`${name_game}`,`${randomPass}`),(err,info)=>{
+                if(err){
+                    res.statusCode = 404;
+                    res.write("404 Not Found");
+                    return res.end();
+                }
+            });
+        }
+        body = [];
+    });
 };
 
     const dataRegister = (id,email,pass,nameGame) =>{
