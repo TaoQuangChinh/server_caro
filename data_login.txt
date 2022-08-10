@@ -1,1 +1,0 @@
-{"id":"","mailUser":"chinh@123","passWord":"chinh@gmail.com","name_game":""}
