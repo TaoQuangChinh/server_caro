@@ -10,7 +10,6 @@ const resolver = new Resolver();
 var body = [];
 
 apps.get("/",(req,res)=>{
-    res.write('abc');
     return res.json({
         code:0,
         message:null,
