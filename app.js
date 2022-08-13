@@ -9,6 +9,15 @@ const resolver = new Resolver();
 
 var body = [];
 
+apps.get("/",(req,res)=>{
+    res.write('abc');
+    return res.json({
+        code:0,
+        message:null,
+        payload:null
+    });
+});
+
 apps.post("/login", (req, res) => {
     req.on('data', (chunk) => {
         body.push(chunk);
